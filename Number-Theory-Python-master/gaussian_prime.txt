@@ -1,0 +1,96 @@
+class Complex(object):
+    
+        def __init__(self, c):
+            self.c = c
+            self.real = int(self.c.real)
+            self.imag = int(self.c.imag)
+        
+        #def __init__(self, real = 0, imag = 0):
+            #self.real = real
+            #self.imag = imag
+
+        def __str__(self):
+            if self.imag > 0:
+                return str(self.real) + "+" + str(self.imag) + "i"
+            elif self.imag < 0:
+                return str(self.real) + str(self.imag) + "i"
+            
+        def divide_floor(self,a,b):
+            c=a/b
+            c=int(c.real)+int(c.imag)*1j
+            return c
+        
+        def gcd(self,a,b):
+            #q=int(a/b)
+            q=divide_floor(a,b)
+            r=a-q*b
+            if r!=0:
+                return gcd(b,r)
+            else:
+                return b
+
+        def __truediv__(self, other):
+            j=1j
+            x = self.real * other.real + self.imag * other.imag
+            y = self.imag * other.real - self.real * other.imag
+            z = other.real**2 + other.imag**2
+            real = x / z
+            imag = y / z
+            return real+imag*j
+        
+        def norm(self):
+            res = self.real**2 + self.imag**2
+            return res
+        
+        def factor(self,n):
+            num = n
+            div = 2   # the divisor
+            factors = []  # stores the prime factors
+
+            for div in range(div, num):
+                while num % div == 0: 
+                    factors.append(div)  # adds factor to list
+                    num /= div   # updates num
+                else:
+                    div += 1
+            return factors
+        
+        def factor_norm(self):
+            return self.factor(self.norm())
+        
+        def division(self, other):
+            res = self/other
+            
+            if type(res.real)!=int or type(res.imag)!=int:
+                return False
+            else:
+                return True
+        
+        
+        def gaussian_prime(self):
+            li=[]
+            G = self.c
+            for p in self.factor_norm():
+                if p==2 :
+                    q=(1+1j)
+                elif p%4==3:
+                    q=p
+                else :
+                    n=2
+                    Finish = False
+                    while  not Finish:
+                        d = n**((p-1)/2)
+                    
+                        if d%p==4 or (d+1)%p==0:
+                            k=n**((p-1)/4)
+                            u=self.gcd(p,k+1j)
+                            if G/u==0 :
+                                q=u
+                                Finish=True
+                            else:
+                                q=u.conjugate()
+                                Finish=True
+                        n+=1
+                li.append(q)
+
+            return li
